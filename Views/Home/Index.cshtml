@@ -605,7 +605,7 @@
         <div class="flip-card" id="card">
 
         <div class="face front">
-        Tap to reveal
+        Hold card to reveal
         </div>
 
         <div class="face back">
@@ -963,28 +963,28 @@
         document.addEventListener("keydown", function(e){
 
         // Block F12
-        // if(e.key === "F12"){
-        // e.preventDefault()
-        // return false
-        // }
+        if(e.key === "F12"){
+        e.preventDefault()
+        return false
+        }
 
         // Block Ctrl+Shift+I (Inspect)
-        // if(e.ctrlKey && e.shiftKey && e.key === "I"){
-        // e.preventDefault()
-        // return false
-        // }
+        if(e.ctrlKey && e.shiftKey && e.key === "I"){
+        e.preventDefault()
+        return false
+        }
 
         // Block Ctrl+Shift+J (Console)
-        // if(e.ctrlKey && e.shiftKey && e.key === "J"){
-        // e.preventDefault()
-        // return false
-        // }
+        if(e.ctrlKey && e.shiftKey && e.key === "J"){
+        e.preventDefault()
+        return false
+        }
 
         // Block Ctrl+U (View Source)
-        // if(e.ctrlKey && e.key === "u"){
-        // e.preventDefault()
-        // return false
-        // }
+        if(e.ctrlKey && e.key === "u"){
+        e.preventDefault()
+        return false
+        }
 
         })
 
