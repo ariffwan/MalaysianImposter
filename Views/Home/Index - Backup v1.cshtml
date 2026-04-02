@@ -1,0 +1,624 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malaysian Imposter</title>
+
+    <style>
+
+        body {
+            margin: 0;
+            font-family: Segoe UI;
+            background: radial-gradient(circle at top,#1e1e2f,#0c0c14);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        .app {
+            width: 380px;
+            max-width: 100%;
+            height: 92vh;
+            background: #17171f;
+            border-radius: 26px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            overflow: auto;
+        }
+
+        .title {
+            font-size: 26px;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .setting-group {
+            margin-top: 18px;
+            background: #1f1f2a;
+            border-radius: 14px;
+            padding: 14px;
+        }
+
+        .setting-label {
+            font-size: 13px;
+            opacity: .7;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .number-grid {
+            display: grid;
+            grid-template-columns: repeat(4,1fr);
+            gap: 8px;
+        }
+
+            .number-grid.small {
+                grid-template-columns: repeat(3,1fr);
+            }
+
+            .number-grid button {
+                background: #2b2b38;
+                border: none;
+                border-radius: 10px;
+                padding: 10px;
+                font-weight: 700;
+                color: white;
+            }
+
+                .number-grid button.active {
+                    background: linear-gradient(180deg,#ffd84d,#ff9c00);
+                    color: black;
+                }
+
+                .number-grid button:disabled {
+                    opacity: .3;
+                }
+
+        .category-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+            .category-grid button {
+                background: #2b2b38;
+                border: none;
+                border-radius: 12px;
+                padding: 14px;
+                font-weight: 600;
+                color: white;
+            }
+
+                .category-grid button.active {
+                    background: linear-gradient(45deg,#ffcc00,#ff9900);
+                    color: black;
+                }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 18px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 800;
+            background: linear-gradient(45deg,#ffcc00,#ff9900);
+            color: black;
+            cursor: pointer;
+        }
+
+        .card {
+            background: #222230;
+            border-radius: 18px;
+            padding: 22px;
+        }
+
+        .flip {
+            perspective: 1000px;
+            margin-top: 18px;
+        }
+
+        .flip-card {
+            width: 100%;
+            height: 200px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform .6s;
+            border-radius: 16px;
+        }
+
+            .flip-card.flipped {
+                transform: rotateY(180deg);
+            }
+
+        .face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            backface-visibility: hidden;
+        }
+
+        .front {
+            background: #2f2f40;
+        }
+
+        .back {
+            transform: rotateY(180deg);
+        }
+
+        .word {
+            font-size: 28px;
+            font-weight: 800;
+            margin-top: 6px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* monster cards */
+
+        .monster-card {
+            width: 100%;
+            height: 100%;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        .monster1 {
+            background: linear-gradient(135deg,#5bd85b,#1fa21f);
+        }
+
+        .monster2 {
+            background: linear-gradient(135deg,#ff5757,#c90000);
+        }
+
+        .monster3 {
+            background: linear-gradient(135deg,#ffd93b,#ff9f00);
+        }
+
+        .monster4 {
+            background: linear-gradient(135deg,#ff8c42,#ff3d00);
+        }
+
+        .monster5 {
+            background: linear-gradient(135deg,#4dc3ff,#0066ff);
+        }
+
+        .monster6 {
+            background: linear-gradient(135deg,#a66cff,#5c00ff);
+        }
+
+        .monster7 {
+            background: linear-gradient(135deg,#ff7ad9,#ff0088);
+        }
+
+        .monster8 {
+            background: linear-gradient(135deg,#37e0c4,#009688);
+        }
+
+        .monster9 {
+            background: linear-gradient(135deg,#9ccc65,#558b2f);
+        }
+
+        .monster10 {
+            background: linear-gradient(135deg,#ffb74d,#ef6c00);
+        }
+
+        .monster-face {
+            font-size: 70px;
+        }
+
+        /* pass phone animation */
+
+        .pass-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            height: 200px;
+            animation: fadeIn .4s ease;
+        }
+
+        .phone-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+            animation: bounce 1s infinite;
+        }
+
+        .pass-text {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .pass-sub {
+            opacity: .7;
+            font-size: 14px;
+        }
+
+        @@keyframes bounce {
+            0% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app">
+
+        <div class="title">🎭 Malaysian Imposter</div>
+
+        <div id="settings">
+
+            <div class="setting-group">
+                <label class="setting-label">Players</label>
+                <div class="number-grid" id="playersGrid"></div>
+            </div>
+
+            <div class="setting-group">
+                <label class="setting-label">Imposters</label>
+                <div class="number-grid small" id="impostersGrid"></div>
+            </div>
+
+            <div class="setting-group">
+
+                <label class="setting-label">Category</label>
+
+                <div class="category-grid" id="categoryGrid">
+
+                    <button data-value="Nama Tempat">Places</button>
+                    <button data-value="Makanan & Minuman">Food</button>
+                    <button data-value="Pekerjaan / Hobi / Sukan">Jobs</button>
+                    <button data-value="Artis / Influencer / Atlet">Celebrities</button>
+                    <button data-value="Jenama Tempatan">Brands</button>
+
+                </div>
+
+            </div>
+
+            <button onclick="startGame()">Start Game</button>
+
+        </div>
+
+        <div id="game"></div>
+
+    </div>
+
+    <script>
+
+        const monsterFaces=[
+        "👾","👹","👺","😈","👻","🤖","🧌","😜","😵","🫠"
+        ]
+
+        let selectedCategory=""
+        let gameData=null
+        let currentPlayer=0
+        let selectedPlayers=4
+        let selectedImposters=1
+
+        function buildGrid(){
+
+        const playersGrid=document.getElementById("playersGrid")
+        const impostersGrid=document.getElementById("impostersGrid")
+
+        for(let i=3;i<=10;i++){
+
+        let btn=document.createElement("button")
+        btn.innerText=i
+
+        if(i===selectedPlayers)btn.classList.add("active")
+
+        btn.onclick=()=>{
+
+        selectedPlayers=i
+
+        document.querySelectorAll("#playersGrid button")
+        .forEach(b=>b.classList.remove("active"))
+
+        btn.classList.add("active")
+
+        updateImposters()
+
+        }
+
+        playersGrid.appendChild(btn)
+
+        }
+
+        for(let i=1;i<=3;i++){
+
+        let btn=document.createElement("button")
+        btn.innerText=i
+
+        if(i===selectedImposters)btn.classList.add("active")
+
+        btn.onclick=()=>{
+
+        if(btn.disabled)return
+
+        selectedImposters=i
+
+        document.querySelectorAll("#impostersGrid button")
+        .forEach(b=>b.classList.remove("active"))
+
+        btn.classList.add("active")
+
+        }
+
+        impostersGrid.appendChild(btn)
+
+        }
+
+        updateImposters()
+
+        }
+
+        function updateImposters(){
+
+        let max=1
+
+        if(selectedPlayers>=10)max=3
+        else if(selectedPlayers>=7)max=2
+
+        document.querySelectorAll("#impostersGrid button")
+        .forEach(btn=>{
+
+        let value=parseInt(btn.innerText)
+
+        btn.disabled=value>max
+
+        })
+
+        if(selectedImposters>max)selectedImposters=max
+
+        }
+
+        document.addEventListener("DOMContentLoaded",()=>{
+        buildGrid()
+        initCategorySelection()
+        })
+
+        async function startGame(){
+
+        if(selectedImposters>=selectedPlayers){
+        alert("Imposters must be less than players")
+        return
+        }
+
+        if(!selectedCategory){
+        alert("Select category")
+        return
+        }
+
+        const response=await fetch("/api/game/start",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+        playerCount:selectedPlayers,
+        imposterCount:selectedImposters,
+        categoryName:selectedCategory
+        })
+        })
+
+        gameData=await response.json()
+
+        document.getElementById("settings").classList.add("hidden")
+
+        currentPlayer=0
+
+        showPassAnimation()
+
+        }
+
+        function showPassAnimation(){
+
+        if(currentPlayer>=gameData.players.length){
+        passPhone()
+        return
+        }
+
+        let playerNumber=currentPlayer+1
+
+        document.getElementById("game").innerHTML=`
+
+        <div class="card pass-screen">
+
+        <div class="phone-icon">📱</div>
+
+        <div class="pass-text">Pass the phone</div>
+
+        <div class="pass-sub">
+        Give the phone to Player ${playerNumber}
+        </div>
+
+        </div>
+
+        `
+
+        setTimeout(()=>{
+        passPhone()
+        },1500)
+
+        }
+
+        function passPhone(){
+
+        if(currentPlayer>=gameData.players.length){
+
+        document.getElementById("game").innerHTML=`
+        <h2>Discussion Phase</h2>
+        <button onclick="startVote()">Start Voting</button>
+        `
+
+        return
+        }
+
+        let player=gameData.players[currentPlayer]
+        let playerNumber=currentPlayer+1
+
+        let randomCard=Math.floor(Math.random()*10)+1
+        let monsterClass="monster"+randomCard
+        let face=monsterFaces[randomCard-1]
+
+        document.getElementById("game").innerHTML=`
+
+        <div class="card">
+
+        <h2>Player ${playerNumber}</h2>
+
+        <div class="flip">
+
+        <div class="flip-card" id="card" onclick="flip()">
+
+        <div class="face front">
+        Tap to reveal
+        </div>
+
+        <div class="face back">
+
+        <div class="monster-card ${monsterClass}">
+
+        <div class="monster-face">${face}</div>
+
+        <div>${player.role}</div>
+
+        <div class="word">${player.word}</div>
+
+        </div>
+
+        </div>
+
+        </div>
+
+        </div>
+
+        <button onclick="next()">Hide & Pass Phone</button>
+
+        </div>
+
+        `
+
+        }
+
+        function flip(){
+        document.getElementById("card").classList.toggle("flipped")
+        }
+
+        function next(){
+        currentPlayer++
+        showPassAnimation()
+        }
+
+        function startVote(){
+
+        let html=`<h2>Vote Imposter</h2>`
+
+        for(let i=1;i<=selectedPlayers;i++){
+        html+=`<button onclick="vote(${i})">Vote Player ${i}</button>`
+        }
+
+        document.getElementById("game").innerHTML=html
+
+        }
+
+        function vote(player){
+
+        let role=gameData.players[player-1].role
+
+        if(role==="Imposter"){
+
+        document.getElementById("game").innerHTML=`
+        <h2>Correct!</h2>
+        <p>You caught the Imposter</p>
+        <button onclick="playAgain()">Play Again</button>
+        `
+
+        }else{
+
+        document.getElementById("game").innerHTML=`
+        <h2>Wrong!</h2>
+        <p>Player ${player} is innocent</p>
+        <button onclick="playAgain()">Play Again</button>
+        `
+
+        }
+
+        }
+
+        function playAgain(){
+
+        gameData=null
+        currentPlayer=0
+
+        document.getElementById("game").innerHTML=""
+        document.getElementById("settings").classList.remove("hidden")
+
+        }
+
+        function initCategorySelection(){
+
+        document.querySelectorAll("#categoryGrid button")
+        .forEach(btn=>{
+
+        btn.onclick=()=>{
+
+        document.querySelectorAll("#categoryGrid button")
+        .forEach(b=>b.classList.remove("active"))
+
+        btn.classList.add("active")
+
+        selectedCategory=btn.dataset.value
+
+        }
+
+        })
+
+        }
+
+    </script>
+
+</body>
+</html>
