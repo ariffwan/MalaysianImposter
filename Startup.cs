@@ -66,32 +66,43 @@ namespace JanganKantoi
 			//	options.UseNpgsql(connection);
 			//});
 
+			//services.AddDbContext<MyDbContext>(options =>
+			//{
+			//	//var connection = Environment.GetEnvironmentVariable("DATABASE_URL");
+
+			//	//if (!string.IsNullOrEmpty(connection))
+			//	//{
+			//	//	var uri = new Uri(connection);
+			//	//	var userInfo = uri.UserInfo.Split(':');
+
+			//	//	var builder = new Npgsql.NpgsqlConnectionStringBuilder
+			//	//	{
+			//	//		Host = uri.Host,
+			//	//		Port = uri.Port,
+			//	//		Username = userInfo[0],
+			//	//		Password = userInfo[1],
+			//	//		Database = uri.AbsolutePath.Trim('/'),
+			//	//		SslMode = Npgsql.SslMode.Require,
+			//	//		TrustServerCertificate = true
+			//	//	};
+
+			//	//	options.UseNpgsql(builder.ConnectionString);
+			//	//}
+			//	//else
+			//	//{
+			//		options.UseNpgsql(Configuration.GetConnectionString("mydb"));
+			//	//}
+			//});
+
 			services.AddDbContext<MyDbContext>(options =>
 			{
-				//var connection = Environment.GetEnvironmentVariable("DATABASE_URL");
+				var connection = Environment.GetEnvironmentVariable("ConnectionStrings__mydb");
 
-				//if (!string.IsNullOrEmpty(connection))
-				//{
-				//	var uri = new Uri(connection);
-				//	var userInfo = uri.UserInfo.Split(':');
+				Console.WriteLine("=== DB CONNECTION ===");
+				Console.WriteLine(connection);
+				Console.WriteLine("=====================");
 
-				//	var builder = new Npgsql.NpgsqlConnectionStringBuilder
-				//	{
-				//		Host = uri.Host,
-				//		Port = uri.Port,
-				//		Username = userInfo[0],
-				//		Password = userInfo[1],
-				//		Database = uri.AbsolutePath.Trim('/'),
-				//		SslMode = Npgsql.SslMode.Require,
-				//		TrustServerCertificate = true
-				//	};
-
-				//	options.UseNpgsql(builder.ConnectionString);
-				//}
-				//else
-				//{
-					options.UseNpgsql(Configuration.GetConnectionString("mydb"));
-				//}
+				options.UseNpgsql(connection);
 			});
 
 			// ✅ Controllers + Views
