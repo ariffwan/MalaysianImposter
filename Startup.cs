@@ -96,7 +96,12 @@ namespace JanganKantoi
 
 			services.AddDbContext<MyDbContext>(options =>
 			{
-				var connection = Environment.GetEnvironmentVariable("ConnectionStrings__mydb");
+				var envVar = Environment.GetEnvironmentVariable("ConnectionStrings__mydb");
+
+				Console.WriteLine("=== ENV VAR ===");
+				Console.WriteLine(envVar);
+
+				var connection = envVar;
 
 				Console.WriteLine("=== DB CONNECTION ===");
 				Console.WriteLine(connection);
