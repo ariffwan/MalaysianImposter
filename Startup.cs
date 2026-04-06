@@ -8,13 +8,13 @@ namespace JanganKantoi
 	public class Startup
 	{
 		// Uncomment if intend to test locally
-		//public Startup()
-		//{
-		//	// Load configuration from appsettings.json
-		//	var builder = new ConfigurationBuilder().AddJsonFile("appsettings.json");
-		//	Configuration = builder.Build();
+		public Startup()
+		{
+			// Load configuration from appsettings.json
+			var builder = new ConfigurationBuilder().AddJsonFile("appsettings.json");
+			Configuration = builder.Build();
 
-		//}
+		}
 
 
 		// Uncomment if intend to deploy
