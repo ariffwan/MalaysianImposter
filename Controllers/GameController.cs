@@ -37,7 +37,7 @@ namespace JanganKantoi.Controllers
 
 				var word = await _context.Words
 					.Where(x => x.word_category == category.categories_id)
-					.OrderBy(x => Guid.NewGuid())
+					//.OrderBy(x => Guid.NewGuid())
 					.FirstOrDefaultAsync();
 
 				if (word == null)
