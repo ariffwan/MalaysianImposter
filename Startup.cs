@@ -7,28 +7,14 @@ namespace JanganKantoi
 {
 	public class Startup
 	{
-		// Uncomment if intend to test locally
-		public Startup()
-		{
-			// Load configuration from appsettings.json
-			var builder = new ConfigurationBuilder().AddJsonFile("appsettings.json");
-			Configuration = builder.Build();
-
-		}
-
-
-		// Uncomment if intend to deploy
+		// ✅ Keep ONLY this constructor (fix crash)
 		public Startup(IConfiguration configuration)
 		{
 			Configuration = configuration;
 		}
 
-		readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 		public IConfiguration Configuration { get; set; }
 
-		// -------------------------------------------------------------
-		// ConfigureServices: Called by the runtime to add services
-		// -------------------------------------------------------------
 		public void ConfigureServices(IServiceCollection services)
 		{
 			// ✅ Cookie configuration
@@ -38,7 +24,7 @@ namespace JanganKantoi
 				options.CheckConsentNeeded = context => false;
 			});
 
-			// ✅ Enable sessions
+			// ✅ Sessions
 			services.AddDistributedMemoryCache();
 			services.AddSession(options =>
 			{
@@ -47,69 +33,30 @@ namespace JanganKantoi
 				options.Cookie.HttpOnly = true;
 			});
 
-			// ✅ Add this line: HttpContext Accessor
 			services.AddHttpContextAccessor();
 
-			// ✅ Database context setup (PostgreSQL)
-			//services.AddDbContext<MyDbContext>(options =>
-			//{
-			//	options.UseNpgsql(Configuration.GetConnectionString("mydb"), builder =>
-			//	{
-			//		builder.EnableRetryOnFailure(3);
-			//	});
-			//});
-			//services.AddDbContext<MyDbContext>(options =>
-			//{
-			//	var connection = Environment.GetEnvironmentVariable("DATABASE_URL")
-			//					 ?? Configuration.GetConnectionString("mydb");
-
-			//	options.UseNpgsql(connection);
-			//});
-
-			//services.AddDbContext<MyDbContext>(options =>
-			//{
-			//	//var connection = Environment.GetEnvironmentVariable("DATABASE_URL");
-
-			//	//if (!string.IsNullOrEmpty(connection))
-			//	//{
-			//	//	var uri = new Uri(connection);
-			//	//	var userInfo = uri.UserInfo.Split(':');
-
-			//	//	var builder = new Npgsql.NpgsqlConnectionStringBuilder
-			//	//	{
-			//	//		Host = uri.Host,
-			//	//		Port = uri.Port,
-			//	//		Username = userInfo[0],
-			//	//		Password = userInfo[1],
-			//	//		Database = uri.AbsolutePath.Trim('/'),
-			//	//		SslMode = Npgsql.SslMode.Require,
-			//	//		TrustServerCertificate = true
-			//	//	};
-
-			//	//	options.UseNpgsql(builder.ConnectionString);
-			//	//}
-			//	//else
-			//	//{
-			//		options.UseNpgsql(Configuration.GetConnectionString("mydb"));
-			//	//}
-			//});
-
+			// ✅ FIXED DB CONNECTION
 			services.AddDbContext<MyDbContext>(options =>
 			{
-				var connection = Environment.GetEnvironmentVariable("ConnectionStrings_mydb");
+				var connection = Configuration.GetConnectionString("mydb");
 
 				Console.WriteLine("=== DB CONNECTION ===");
-				Console.WriteLine(connection);
+				Console.WriteLine(connection ?? "NULL");
 				Console.WriteLine("=====================");
+
+				if (string.IsNullOrEmpty(connection))
+				{
+					throw new Exception("Connection string 'mydb' is NULL!");
+				}
 
 				options.UseNpgsql(connection);
 			});
 
-			// ✅ Controllers + Views
+			// ✅ MVC
 			services.AddControllersWithViews();
 			services.AddRazorPages();
 
-			// ✅ Localization setup
+			// ✅ Localization
 			services.AddLocalization(option => option.ResourcesPath = "Resources");
 
 			// ✅ CORS
@@ -123,7 +70,7 @@ namespace JanganKantoi
 				});
 			});
 
-			// ✅ Handle large form data
+			// ✅ Large form handling
 			services.Configure<FormOptions>(options =>
 			{
 				options.ValueCountLimit = int.MaxValue;
@@ -131,9 +78,6 @@ namespace JanganKantoi
 			});
 		}
 
-		// -------------------------------------------------------------
-		// Configure: Defines HTTP request pipeline
-		// -------------------------------------------------------------
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 		{
 			if (env.IsDevelopment())
@@ -158,16 +102,14 @@ namespace JanganKantoi
 				SupportedUICultures = supportedCultures
 			});
 
-			// Optional: Base path
-			//app.UsePathBase("/CIPM2");
-
+			// ⚠️ Optional: disable if warning bothers you
 			app.UseHttpsRedirection();
+
 			app.UseStaticFiles();
 
 			app.UseRouting();
 			app.UseCors();
 
-			// ✅ Must be before Authorization
 			app.UseSession();
 
 			app.UseAuthentication();
@@ -175,18 +117,12 @@ namespace JanganKantoi
 
 			app.UseEndpoints(endpoints =>
 			{
-				endpoints.MapControllers(); // ⭐ REQUIRED for API controllers
+				endpoints.MapControllers();
 
 				endpoints.MapControllerRoute(
 					name: "default",
 					pattern: "{controller=Home}/{action=Index}/{id?}");
 			});
-
-			//using (var scope = app.ApplicationServices.CreateScope())
-			//{
-			//	var db = scope.ServiceProvider.GetRequiredService<MyDbContext>();
-			//	db.Database.Migrate();
-			//}
 		}
 	}
 }
