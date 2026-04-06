@@ -30,14 +30,25 @@ namespace JanganKantoi.Controllers
 			try
 			{
 				var category = await _context.Categories
+					.AsNoTracking()
 					.FirstOrDefaultAsync(x => x.categories_name == request.CategoryName);
 
 				if (category == null)
 					return BadRequest("Category not found");
 
-				var word = await _context.Words
-					.Where(x => x.word_category == category.categories_id)
-					//.OrderBy(x => Guid.NewGuid())
+				var wordsQuery = _context.Words
+					.AsNoTracking()
+					.Where(x => x.word_category == category.categories_id);
+
+				var wordCount = await wordsQuery.CountAsync();
+
+				if (wordCount == 0)
+					return BadRequest("No words found");
+
+				var randomIndex = Random.Shared.Next(wordCount);
+
+				var word = await wordsQuery
+					.Skip(randomIndex)
 					.FirstOrDefaultAsync();
 
 				if (word == null)
@@ -54,15 +65,13 @@ namespace JanganKantoi.Controllers
 					});
 				}
 
-				var random = new Random();
-
 				for (int i = 0; i < request.ImposterCount; i++)
 				{
 					int index;
 
 					do
 					{
-						index = random.Next(request.PlayerCount);
+						index = Random.Shared.Next(request.PlayerCount);
 					}
 					while (players[index].GetType().GetProperty("role")?.GetValue(players[index])?.ToString() == "Imposter");
 
