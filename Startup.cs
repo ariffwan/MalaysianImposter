@@ -40,10 +40,6 @@ namespace JanganKantoi
 			{
 				var connection = Configuration.GetConnectionString("mydb");
 
-				Console.WriteLine("=== DB CONNECTION ===");
-				Console.WriteLine(connection ?? "NULL");
-				Console.WriteLine("=====================");
-
 				if (string.IsNullOrEmpty(connection))
 				{
 					throw new Exception("Connection string 'mydb' is NULL!");
